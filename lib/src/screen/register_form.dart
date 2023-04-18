@@ -29,12 +29,12 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   Future signUp() async {
-    var url =  Uri.parse("http://192.168.100.154/usuariosvisor/registro.php");
+    var url =  Uri.parse("http://1cfd-189-234-128-42.ngrok-free.app/usuariosvisor/registro.php");
     var response = await http.post(url, body: {
       "nombre": _conName.text,
       "correo": _conEmail.text,
-      "celular": _conPhone,
-      "contrasenia": _conCPassword,
+      "celular": _conPhone.text,
+      "contrasenia": _conCPassword.text,
     });
 
     var data = json.decode(response.body);

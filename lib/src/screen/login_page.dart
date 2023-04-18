@@ -28,27 +28,27 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future login() async {
-    TextEditingController unombre = _conUserId;
-    TextEditingController upassword = _conPassword;
-    var url = Uri.parse("http://192.168.100.154/usuariosvisor/login.php");
-    final response = await http.post(url, body: {
-      "usuario": unombre.text,
-      "contrasenia": upassword.text,
-    });
-    var data = json.decode(response.body);
-    print(data);
-    if (data['nombre'].isNull) {
+    String unombre = _conUserId.text;
+    String upassword = _conPassword.text;
+
+    if (unombre.isEmpty) {
       alertDialog(context, "Ingresa un nombre de usuario");
-    } else if (data['contrasenia'].isNull) {
-      alertDialog(context, "Ingresa una contrseña.");
-    } else if (data == 'Success') {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => const HomeForm()),
-          (Route<dynamic> route) => false);
-      alertDialog(context, 'Usuario creado');
+    } else if (upassword.isEmpty) {
+      alertDialog(context, "Ingresa tu contraseña");
     } else {
-      alertDialog(context, "¡Usuario no encontrado!");
+      var url = Uri.parse(
+          "http://6fe6-189-234-128-42.ngrok-free.app/usuariosvisor/login.php");
+      final response = await http.get(url);
+      var data = json.decode(response.body);
+
+      if (unombre == data [0]['nombre'] && upassword == data [0]['contrasenia']) {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => const HomeForm()),
+            (Route<dynamic> route) => false);
+      } else {
+        alertDialog(context, 'Credenciales erroneas');
+      }
     }
   }
 
@@ -148,3 +148,28 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+  
+
+  // Future login() async {
+  //   TextEditingController unombre = _conUserId;
+  //   TextEditingController upassword = _conPassword;
+  //   var url = Uri.parse("http://1cfd-189-234-128-42.ngrok-free.app/usuariosvisor/login.php");
+  //   final response = await http.get(url);
+  //   var data = json.decode(response.body);
+  //   print(data);
+  //   if (data['nombre'].isNull) {
+  //     alertDialog(context, "Ingresa un nombre de usuario");
+  //   } else if (data['contrasenia'].isNull) {
+  //     alertDialog(context, "Ingresa una contrseña.");
+  //   } else if (data == 'Success') {
+  //     Navigator.pushAndRemoveUntil(
+  //         context,
+  //         MaterialPageRoute(builder: (_) => const HomeForm()),
+  //         (Route<dynamic> route) => false);
+  //     alertDialog(context, 'Usuario creado');
+  //   } else {
+  //     alertDialog(context, "¡Usuario no encontrado!");
+  //   }
+  // }
+
+  
