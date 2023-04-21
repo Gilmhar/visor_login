@@ -28,28 +28,43 @@ class _RegisterFormState extends State<RegisterForm> {
     super.initState();
   }
 
-  Future signUp() async {
-    var url =  Uri.parse("http://1cfd-189-234-128-42.ngrok-free.app/usuariosvisor/registro.php");
-    var response = await http.post(url, body: {
-      "nombre": _conName.text,
-      "correo": _conEmail.text,
-      "celular": _conPhone.text,
-      "contrasenia": _conCPassword.text,
-    });
+  Future register() async {
+    String unombre = _conName.text;
+    String uemail = _conEmail.text;
+    String uphone = _conPhone.text;
+    String upassword = _conPassword.text;
+    String ucpassword = _conCPassword.text;
 
-    var data = json.decode(response.body);
-    if (data['nombre'] == "") {
-      alertDialog(context, "Ingrese un nombre de usuario.");
-    } else if (data['constrasenia'] == "") {
-      alertDialog(context, "Ingrese una contraseña.");
-    } else if (data['correo'] == "") {
-      alertDialog(context, "Ingrese un correo.");
-    } else if (data['celular'] == "") {
-      alertDialog(context, "Ingrese un teléfpono.");
-    } else if (data == "Error") {
-      alertDialog(context, "¡Este usuario ya existe!");
+    if (_formKey.currentState!.validate()) {
+      if (upassword != ucpassword) {
+        alertDialog(context, "Las contraseñas no coinciden");
+      } else {
+        _formKey.currentState?.save();
+        var url = Uri.parse(
+            "https://8250-189-234-128-42.ngrok-free.app/visorusers/registro.php");
+        var response = await http.post(url, body: {
+          "nombre": unombre,
+          "correo": uemail,
+          "celular": uphone,
+          "contrasenia": upassword,
+        });
+
+        if (response.body.isNotEmpty) {
+          var data = json.decode(response.body);
+
+          if (data['error'] == 'Error') {
+            alertDialog(context, "El usuario ya existe.");
+          } else {
+            alertDialog(context, "¡Usuario creado!");
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => const LoginPage()));
+          }
+        } else {
+          alertDialog(context, "No se pudo realizar el registro");
+        }
+      }
     } else {
-      alertDialog(context, "¡Usuario creado!");
+      alertDialog(context, "Hay errores en sus datos");
     }
   }
 
@@ -117,7 +132,7 @@ class _RegisterFormState extends State<RegisterForm> {
                             backgroundColor: Colors.cyan,
                             padding: const EdgeInsets.all(20)),
                         onPressed: () {
-                          signUp();
+                          register();
                         },
                         child: const Text(
                           'Crear Usuario',

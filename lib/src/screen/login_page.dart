@@ -19,7 +19,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
-  final _conUserId = TextEditingController();
+  final _conName = TextEditingController();
   final _conPassword = TextEditingController();
 
   @override
@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future login() async {
-    String unombre = _conUserId.text;
+    String unombre = _conName.text;
     String upassword = _conPassword.text;
 
     if (unombre.isEmpty) {
@@ -37,18 +37,29 @@ class _LoginPageState extends State<LoginPage> {
       alertDialog(context, "Ingresa tu contraseña");
     } else {
       var url = Uri.parse(
-          "http://6fe6-189-234-128-42.ngrok-free.app/usuariosvisor/login.php");
-      final response = await http.get(url);
-      var data = json.decode(response.body);
-
-      if (unombre == data [0]['nombre'] && upassword == data [0]['contrasenia']) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (_) => const HomeForm()),
-            (Route<dynamic> route) => false);
+          "http://096f-189-234-128-42.ngrok-free.app/usuariosvisor/login.php");
+      //En caso de usar el otro login y registro de php que hizo Juan poner el metodo get
+      var response = await http.get(url);
+      //  body: {
+      //   "nombre": unombre,
+      //   "contrasenia": upassword,
+      // });
+      if (response.body.isNotEmpty) {
+        //unombre == data [0]['nombre'] && upassword == data [0]['contrasenia'] Esta instrucción puede ir dentro del if de abajo en caso de usar el otro php que hizo Juan
+        var data = json.decode(response.body);
+        if (unombre == data [0]['nombre'] && upassword == data [0]['contrasenia']) {
+          alertDialog(context, "¡Bienvenido!");
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => const HomeForm()),
+              (Route<dynamic> route) => false);
+        } else {
+          alertDialog(context, 'Credenciales erroneas');
+        }
       } else {
-        alertDialog(context, 'Credenciales erroneas');
+        alertDialog(context, "No se pudo iniciar sesión.");
       }
+      
     }
   }
 
@@ -88,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           GetTextFormfield(
-                              controller: _conUserId,
+                              controller: _conName,
                               hintName: 'Usuario',
                               icon: Icons.person),
                           const SizedBox(height: 5.0),

@@ -13,10 +13,10 @@ alertDialog(BuildContext context, String msg) {
       fontSize: 15);
 }
 
-validateCurp(String curp) {
-  final curpReg = RegExp(r"^([a-zA-Z]{4})+(\d{6})+([a-zA-Z]{6})+(\d{2})$");
-  return curpReg.hasMatch(curp);
-}
+// validateCurp(String curp) {
+//   final curpReg = RegExp(r"^([a-zA-Z]{4})+(\d{6})+([a-zA-Z]{6})+(\d{2})$");
+//   return curpReg.hasMatch(curp);
+// }
 
 validateEmail(String email) {
   final emailReg = RegExp(
