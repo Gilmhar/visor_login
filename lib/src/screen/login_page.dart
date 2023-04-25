@@ -31,35 +31,29 @@ class _LoginPageState extends State<LoginPage> {
     String unombre = _conName.text;
     String upassword = _conPassword.text;
 
-    if (unombre.isEmpty) {
-      alertDialog(context, "Ingresa un nombre de usuario");
-    } else if (upassword.isEmpty) {
-      alertDialog(context, "Ingresa tu contraseña");
-    } else {
-      var url = Uri.parse(
-          "http://096f-189-234-128-42.ngrok-free.app/usuariosvisor/login.php");
-      //En caso de usar el otro login y registro de php que hizo Juan poner el metodo get
-      var response = await http.get(url);
-      //  body: {
-      //   "nombre": unombre,
-      //   "contrasenia": upassword,
-      // });
-      if (response.body.isNotEmpty) {
-        //unombre == data [0]['nombre'] && upassword == data [0]['contrasenia'] Esta instrucción puede ir dentro del if de abajo en caso de usar el otro php que hizo Juan
-        var data = json.decode(response.body);
-        if (unombre == data [0]['nombre'] && upassword == data [0]['contrasenia']) {
-          alertDialog(context, "¡Bienvenido!");
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (_) => const HomeForm()),
-              (Route<dynamic> route) => false);
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState?.save();
+        var url = Uri.parse(
+            "https://d909-189-234-128-42.ngrok-free.app/visorusers/login.php");
+        var response = await http.post(url, body: {
+          "nombre": unombre,
+          "contrasenia": upassword,
+        });
+        if (response.body.isNotEmpty) {
+          var data = json.decode(response.body);
+          print(data);
+          if (data['error'] == "Error") {
+            alertDialog(context, "Usuario o contraseña erronenas.");
+          } else {
+            alertDialog(context, "¡Bienvenido!");
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => const HomeForm()));
+          }
         } else {
-          alertDialog(context, 'Credenciales erroneas');
+          alertDialog(context, "No se pudo iniciar sesión.");
         }
-      } else {
-        alertDialog(context, "No se pudo iniciar sesión.");
-      }
-      
+    } else {
+      alertDialog(context, "Hay errores en sus datos.");
     }
   }
 

@@ -27,9 +27,17 @@ class GetTextFormfield extends StatelessWidget {
         keyboardType: inputType,
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Por favor ingresa $hintName';
+            return 'Por favor ingresa $hintName.';
           } else if (hintName == "E-mail" && !validateEmail(value)) {
-            return 'Por favor ingresa un email válido';
+            return 'Por favor ingresa un email válido.';
+          } else if (hintName == "Contraseña" && !validateContrasenia(value)){
+            return '''Contraseña no valida. Debe contener:
+              8 caracteres
+              Al menos 1 mayúscula
+              Al menos 1 minúscula
+              Al menos un número
+              Un caracter especial 
+            ''';
           }
           return null;
         },
